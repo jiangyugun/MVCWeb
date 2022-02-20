@@ -20,10 +20,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.ActionLink("電影名稱", "Index", new { sortOrder = "電影名稱" })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ReleaseDate)
+            @Html.ActionLink("發布日期", "Index", new { sortOrder = "發布日期" })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Genre)

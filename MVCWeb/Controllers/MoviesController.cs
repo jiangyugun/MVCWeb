@@ -15,15 +15,14 @@ namespace MVCWeb.Controllers
         private MovieDBContext db = new MovieDBContext();
 
         // GET: Movies
-        public ActionResult Index(string movieGenre, string searchString)
+        public ActionResult Index(string movieGenre, string searchString, string sortOrder= "電影名稱")
         {
             var GenreLst = new List<string>();
             var GenreQry = from d in db.Movies orderby d.Genre select d.Genre;
+            var movies = from m in db.Movies select m;
 
             GenreLst.AddRange(GenreQry.Distinct());
-            ViewBag.movieGenre = new SelectList(GenreLst);
-
-            var movies = from m in db.Movies select m;
+            ViewBag.movieGenre = new SelectList(GenreLst);          
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -35,7 +34,20 @@ namespace MVCWeb.Controllers
                 movies = movies.Where(x => x.Genre == movieGenre);
             }
 
-            return View(movies);
+            switch (sortOrder)
+            {
+                case "電影名稱":
+                    movies = movies.OrderBy(s => s.Title);
+                    break;
+                case "發布日期":
+                    movies = movies.OrderBy(s => s.ReleaseDate);
+                    break;
+                default:
+                    movies = movies.OrderBy(s => s.Title);
+                    break;
+            }
+
+            return View(movies.ToList());
         }
 
         // GET: Movies/Details/5
