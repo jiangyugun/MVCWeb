@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MVCWeb.Models;
+using PagedList;
 
 namespace MVCWeb.Controllers
 {
@@ -15,8 +16,10 @@ namespace MVCWeb.Controllers
         private MovieDBContext db = new MovieDBContext();
 
         // GET: Movies
-        public ActionResult Index(string movieGenre, string searchString, string sortOrder= "電影名稱")
+        public ActionResult Index(string movieGenre, string searchString, string sortOrder= "電影名稱", int? page=1)
         {
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
             var GenreLst = new List<string>();
             var GenreQry = from d in db.Movies orderby d.Genre select d.Genre;
             var movies = from m in db.Movies select m;
@@ -47,7 +50,7 @@ namespace MVCWeb.Controllers
                     break;
             }
 
-            return View(movies.ToList());
+            return View(movies.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Movies/Details/5

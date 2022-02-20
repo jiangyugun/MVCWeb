@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<MVCWeb.Models.Movie>
+@using PagedList
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Index";
@@ -11,55 +14,58 @@
 
     @using (Html.BeginForm("Index", "Movies", FormMethod.Get))
     {
-        <p>
-            類別: @Html.DropDownList("movieGenre", "全部")
-            電影名稱: @Html.TextBox("searchString") <input type="submit" value="查詢" />
-        </p>
-    }
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.ActionLink("電影名稱", "Index", new { sortOrder = "電影名稱" })
-        </th>
-        <th>
-            @Html.ActionLink("發布日期", "Index", new { sortOrder = "發布日期" })
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Genre)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Rating)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.Title)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.ReleaseDate)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Genre)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Price)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Rating)
-    </td>
-    <td>
-        @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-        @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-        @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-    </td>
-</tr>
+    <p>
+        類別: @Html.DropDownList("movieGenre", "全部")
+        電影名稱: @Html.TextBox("searchString") <input type="submit" value="查詢" />
+    </p>
 }
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.ActionLink("電影名稱", "Index", new { sortOrder = "電影名稱" })
+            </th>
+            <th>
+                @Html.ActionLink("發布日期", "Index", new { sortOrder = "發布日期" })
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
+            <th></th>
+        </tr>
 
-</table>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <br />
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))
