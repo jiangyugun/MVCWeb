@@ -8,6 +8,14 @@
 
 <p>
     @Html.ActionLink("Create New", "Create")
+
+    @using (Html.BeginForm("Index", "Movies", FormMethod.Get))
+    {
+        <p>
+            Genre: @Html.DropDownList("movieGenre", "全部")
+            Title: @Html.TextBox("searchString") <input type="submit" value="查詢" />
+        </p>
+    }
 </p>
 <table class="table">
     <tr>
