@@ -104,5 +104,10 @@ namespace MVCWeb.Models.Repository
                 }
             }
         }
+
+        public IQueryable<TEntity> GetByAll()
+        {
+            return this._context.Set<TEntity>().AsQueryable();
+        }
     }
 }

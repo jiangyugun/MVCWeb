@@ -18,6 +18,8 @@ namespace MVCWeb.Models.Interface
 
         TEntity Get(Expression<Func<TEntity, bool>> predicate);
 
+        IQueryable<TEntity> GetByAll();
+
         void SaveChanges();
     }
 }

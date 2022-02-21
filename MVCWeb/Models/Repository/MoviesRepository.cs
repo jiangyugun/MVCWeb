@@ -8,18 +8,18 @@ using System.Web;
 
 namespace MVCWeb.Models.Repository
 {
-    public class MoviesRepository : IMoviesRepository
+    public class MoviesRepository : GenericRepository<Movie>, IMoviesRepository
     {
-        protected MovieDBContext db { get; private set; }
-
-        public MoviesRepository()
-        {
-            this.db = new MovieDBContext();
-        }
-
+        /// <summary>
+        /// Index清單列表
+        /// </summary>
+        /// <param name="movieGenre">電影類別</param>
+        /// <param name="searchString">電影名稱-搜尋字串</param>
+        /// <param name="sortOrder">排序</param>
+        /// <returns></returns>
         public IQueryable<Movie> GetAll(string movieGenre, string searchString, string sortOrder)
         {
-            var movies = from m in db.Movies select m;
+            var movies = this.GetByAll();
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -46,9 +46,13 @@ namespace MVCWeb.Models.Repository
             return movies;
         }
 
+        /// <summary>
+        /// 電影類別-下拉選單
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<string> GenreLst()
         {
-            var GenreQry = from d in db.Movies orderby d.Genre select d.Genre;
+            var GenreQry = this.GetByAll().Select(d => d.Genre).Distinct();
             return GenreQry;
         }
     }
