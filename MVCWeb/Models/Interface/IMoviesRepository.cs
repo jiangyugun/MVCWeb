@@ -9,31 +9,6 @@ namespace MVCWeb.Models.Interface
     public interface IMoviesRepository
     {
         /// <summary>
-        /// 新增
-        /// </summary>
-        /// <param name="instance"></param>
-        void Create(Movie instance);
-
-        /// <summary>
-        /// 編輯
-        /// </summary>
-        /// <param name="instance"></param>
-        void Update(Movie instance);
-
-        /// <summary>
-        /// 刪除
-        /// </summary>
-        /// <param name="instance"></param>
-        void Delete(Movie instance);
-
-        /// <summary>
-        /// 取得電影細項
-        /// </summary>
-        /// <param name="ID">電影編號</param>
-        /// <returns></returns>
-        Movie Get(int ID);
-
-        /// <summary>
         /// Index清單列表
         /// </summary>
         /// <param name="movieGenre">電影類別</param>
@@ -47,6 +22,5 @@ namespace MVCWeb.Models.Interface
         /// </summary>
         /// <returns></returns>
         IQueryable<string> GenreLst();
-        void SaveChanges();
     }
 }

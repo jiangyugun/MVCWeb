@@ -16,9 +16,11 @@ namespace MVCWeb.Controllers
     public class MoviesController : Controller
     {
         private IMoviesRepository moviesRepository;
+        private IRepository<Movie> IR_moviesRepository;
         public MoviesController()
         {
             this.moviesRepository = new MoviesRepository();
+            this.IR_moviesRepository = new GenericRepository<Movie>();
         }
 
         public ActionResult Index(string movieGenre, string searchString, string sortOrder= "電影名稱", int? page=1)
@@ -42,7 +44,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesRepository.Get(id.Value);
+                var movies = this.IR_moviesRepository.Get(x => x.ID == id.Value);
                 return View(movies);
             }
         }
@@ -61,7 +63,7 @@ namespace MVCWeb.Controllers
         {
             if (movie != null && ModelState.IsValid)
             {
-                this.moviesRepository.Create(movie);
+                this.IR_moviesRepository.Create(movie);
                 return RedirectToAction("Index");
             }
             else
@@ -78,7 +80,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesRepository.Get(id.Value);
+                var movies = this.IR_moviesRepository.Get(x => x.ID == id.Value);
                 return View(movies);
             }
         }
@@ -91,7 +93,7 @@ namespace MVCWeb.Controllers
         {
             if (movie != null && ModelState.IsValid)
             {
-                this.moviesRepository.Update(movie);
+                this.IR_moviesRepository.Update(movie);
                 return View(movie);
             }
             else
@@ -108,7 +110,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesRepository.Get(id.Value);
+                var movies = this.IR_moviesRepository.Get(x=>x.ID == id.Value);
                 return View(movies);
             }
         }
@@ -119,8 +121,8 @@ namespace MVCWeb.Controllers
         {
             try
             {
-                var movies = this.moviesRepository.Get(id);
-                this.moviesRepository.Delete(movies);
+                var movies = this.IR_moviesRepository.Get(x => x.ID == id);
+                this.IR_moviesRepository.Delete(movies);
             }
             catch
             {
