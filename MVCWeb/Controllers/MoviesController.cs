@@ -17,19 +17,19 @@ namespace MVCWeb.Controllers
 {
     public class MoviesController : Controller
     {
-        private IMoviesService moviesService;
-        public MoviesController()
+        private IMoviesService _moviesService;
+        public MoviesController(IMoviesService service)
         {
-            this.moviesService = new MoviesService();
+            this._moviesService = service;
         }
 
         public ActionResult Index(string movieGenre, string searchString, string sortOrder= "電影名稱", int? page=1)
         {
             int pageSize = 3;
             int pageNumber = (page ?? 1);
-            var movies = this.moviesService.GetAll(movieGenre, searchString, sortOrder);
+            var movies = this._moviesService.GetAll(movieGenre, searchString, sortOrder);
             var GenreLst = new List<string>();
-            var GenreQry = this.moviesService.GenreLst();
+            var GenreQry = this._moviesService.GenreLst();
             GenreLst.AddRange(GenreQry.Distinct());
             ViewBag.movieGenre = new SelectList(GenreLst);                    
 
@@ -44,7 +44,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesService.GetByID(id.Value);
+                var movies = this._moviesService.GetByID(id.Value);
                 return View(movies);
             }
         }
@@ -63,7 +63,7 @@ namespace MVCWeb.Controllers
         {
             if (movie != null && ModelState.IsValid)
             {
-                this.moviesService.Create(movie);
+                this._moviesService.Create(movie);
                 return RedirectToAction("Index");
             }
             else
@@ -80,7 +80,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesService.GetByID(id.Value);
+                var movies = this._moviesService.GetByID(id.Value);
                 return View(movies);
             }
         }
@@ -93,7 +93,7 @@ namespace MVCWeb.Controllers
         {
             if (movie != null && ModelState.IsValid)
             {
-                this.moviesService.Update(movie);
+                this._moviesService.Update(movie);
                 return View(movie);
             }
             else
@@ -110,7 +110,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesService.GetByID(id.Value);
+                var movies = this._moviesService.GetByID(id.Value);
                 return View(movies);
             }
         }
@@ -121,7 +121,7 @@ namespace MVCWeb.Controllers
         {
             try
             {
-                this.moviesService.Delete(id);
+                this._moviesService.Delete(id);
             }
             catch
             {

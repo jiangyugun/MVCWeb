@@ -14,11 +14,6 @@ namespace MVCWeb.Models.Repository
     {
         private DbContext _context { get; set; }
 
-        public GenericRepository():this(new MovieDBContext())
-        {
-
-        }
-
         public GenericRepository(DbContext context)
         {
             if (context == null)
@@ -26,15 +21,6 @@ namespace MVCWeb.Models.Repository
                 throw new ArgumentNullException("context");
             }
             this._context = context;
-        }
-
-        public GenericRepository(ObjectContext context)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException("context");
-            }
-            this._context = new DbContext(context, true);
         }
 
         public void Create(TEntity instance)

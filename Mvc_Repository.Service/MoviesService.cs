@@ -13,7 +13,11 @@ namespace Mvc_Repository.Service
 {
     public class MoviesService : IMoviesService
     {
-        private IRepository<Movie> repository = new GenericRepository<Movie>();
+        private IRepository<Movie> _repository;
+        public MoviesService(IRepository<Movie> repository)
+        {
+            this._repository = repository;
+        }
         public IResult Create(Movie instance)
         {
             if (instance == null)
@@ -24,7 +28,7 @@ namespace Mvc_Repository.Service
             IResult result = new Result(false);
             try
             {
-                this.repository.Create(instance);
+                this._repository.Create(instance);
                 result.Success = true;
             }
             catch (Exception ex)
@@ -44,7 +48,7 @@ namespace Mvc_Repository.Service
             IResult result = new Result(false);
             try
             {
-                this.repository.Update(instance);
+                this._repository.Update(instance);
                 result.Success = true;
             }
             catch (Exception ex)
@@ -66,7 +70,7 @@ namespace Mvc_Repository.Service
             try
             {
                 var instance = this.GetByID(ID);
-                this.repository.Delete(instance);
+                this._repository.Delete(instance);
                 result.Success = true;
             }
             catch (Exception ex)
@@ -78,12 +82,12 @@ namespace Mvc_Repository.Service
 
         public bool IsExists(int ID)
         {
-            return this.repository.GetByAll().Any(x => x.ID == ID);
+            return this._repository.GetByAll().Any(x => x.ID == ID);
         }
 
         public Movie GetByID(int ID)
         {
-            return this.repository.Get(x => x.ID == ID);
+            return this._repository.Get(x => x.ID == ID);
         }
 
         /// <summary>
@@ -95,7 +99,7 @@ namespace Mvc_Repository.Service
         /// <returns></returns>
         public IQueryable<Movie> GetAll(string movieGenre, string searchString, string sortOrder)
         {
-            var movies = repository.GetByAll();
+            var movies = _repository.GetByAll();
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -128,7 +132,7 @@ namespace Mvc_Repository.Service
         /// <returns></returns>
         public IQueryable<string> GenreLst()
         {
-            var GenreQry = repository.GetByAll().Select(d => d.Genre).Distinct();
+            var GenreQry = _repository.GetByAll().Select(d => d.Genre).Distinct();
             return GenreQry;
         }
     }
