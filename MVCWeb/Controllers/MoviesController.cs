@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MVCWeb.Models;
+using MVCWeb.Models.Interface;
+using MVCWeb.Models.Repository;
 using PagedList;
 
 namespace MVCWeb.Controllers
@@ -14,61 +16,38 @@ namespace MVCWeb.Controllers
     public class MoviesController : Controller
     {
         private MovieDBContext db = new MovieDBContext();
+        private IMoviesRepository moviesRepository;
+        public MoviesController()
+        {
+            this.moviesRepository = new MoviesRepository();
+        }
 
-        // GET: Movies
         public ActionResult Index(string movieGenre, string searchString, string sortOrder= "電影名稱", int? page=1)
         {
             int pageSize = 3;
             int pageNumber = (page ?? 1);
+            var movies = this.moviesRepository.GetAll(movieGenre, searchString, sortOrder);
             var GenreLst = new List<string>();
-            var GenreQry = from d in db.Movies orderby d.Genre select d.Genre;
-            var movies = from m in db.Movies select m;
-
+            var GenreQry = this.moviesRepository.GenreLst();
             GenreLst.AddRange(GenreQry.Distinct());
-            ViewBag.movieGenre = new SelectList(GenreLst);          
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                movies = movies.Where(s => s.Title.Contains(searchString));
-            }
-
-            if (!String.IsNullOrEmpty(movieGenre))
-            {
-                movies = movies.Where(x => x.Genre == movieGenre);
-            }
-
-            switch (sortOrder)
-            {
-                case "電影名稱":
-                    movies = movies.OrderBy(s => s.Title);
-                    break;
-                case "發布日期":
-                    movies = movies.OrderBy(s => s.ReleaseDate);
-                    break;
-                default:
-                    movies = movies.OrderBy(s => s.Title);
-                    break;
-            }
+            ViewBag.movieGenre = new SelectList(GenreLst);                    
 
             return View(movies.ToPagedList(pageNumber, pageSize));
         }
 
-        // GET: Movies/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
+            if (!id.HasValue)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index"); 
             }
-            Movie movie = db.Movies.Find(id);
-            if (movie == null)
+            else
             {
-                return HttpNotFound();
+                var movies = this.moviesRepository.Get(id.Value);
+                return View(movies);
             }
-            return View(movie);
         }
 
-        // GET: Movies/Create
         public ActionResult Create()
         {
             return View();
@@ -81,80 +60,74 @@ namespace MVCWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Title,ReleaseDate,Genre,Price")] Movie movie)
         {
-            if (ModelState.IsValid)
+            if (movie != null && ModelState.IsValid)
             {
-                db.Movies.Add(movie);
-                db.SaveChanges();
+                this.moviesRepository.Create(movie);
                 return RedirectToAction("Index");
             }
-
-            return View(movie);
+            else
+            {
+                return View(movie);
+            }     
         }
 
-        // GET: Movies/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (!id.HasValue)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
-            Movie movie = db.Movies.Find(id);
-            if (movie == null)
+            else
             {
-                return HttpNotFound();
+                var movies = this.moviesRepository.Get(id.Value);
+                return View(movies);
             }
-            return View(movie);
         }
 
-        // POST: Movies/Edit/5
         // 若要免於大量指派 (overposting) 攻擊，請啟用您要繫結的特定屬性，
         // 如需詳細資料，請參閱 https://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
         {
-            if (ModelState.IsValid)
+            if (movie != null && ModelState.IsValid)
             {
-                db.Entry(movie).State = EntityState.Modified;
-                db.SaveChanges();
+                this.moviesRepository.Update(movie);
+                return View(movie);
+            }
+            else
+            {
                 return RedirectToAction("Index");
             }
-            return View(movie);
         }
 
-        // GET: Movies/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if (!id.HasValue)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("index");
             }
-            Movie movie = db.Movies.Find(id);
-            if (movie == null)
+            else
             {
-                return HttpNotFound();
+                var movies = this.moviesRepository.Get(id.Value);
+                return View(movies);
             }
-            return View(movie);
         }
 
-        // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Movie movie = db.Movies.Find(id);
-            db.Movies.Remove(movie);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            try
             {
-                db.Dispose();
+                var movies = this.moviesRepository.Get(id);
+                this.moviesRepository.Delete(movies);
             }
-            base.Dispose(disposing);
+            catch
+            {
+                return RedirectToAction("Delete", new { id = id });
+            }
+            return RedirectToAction("index");
         }
     }
 }
