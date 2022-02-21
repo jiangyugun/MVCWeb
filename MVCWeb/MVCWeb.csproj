@@ -149,11 +149,6 @@
       <DependentUpon>202202200923426_DataAnnotations.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Interface\IMoviesRepository.cs" />
-    <Compile Include="Models\Interface\IRepository.cs" />
-    <Compile Include="Models\Movie.cs" />
-    <Compile Include="Models\Repository\GenericRepository.cs" />
-    <Compile Include="Models\Repository\MoviesRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +206,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -235,6 +231,12 @@
     <EmbeddedResource Include="Migrations\202202200923426_DataAnnotations.resx">
       <DependentUpon>202202200923426_DataAnnotations.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mvc_Repository.Models\Mvc_Repository.Models.csproj">
+      <Project>{f295acc8-ba5a-41c5-bb95-e4514bfa7052}</Project>
+      <Name>Mvc_Repository.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
