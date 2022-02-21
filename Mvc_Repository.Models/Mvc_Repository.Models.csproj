@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbContextFactory\DbContextFactory.cs" />
+    <Compile Include="DbContextFactory\IDbContextFactory.cs" />
     <Compile Include="Interface\IRepository.cs" />
     <Compile Include="Movie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

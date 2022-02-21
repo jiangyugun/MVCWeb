@@ -1,8 +1,10 @@
-﻿using MVCWeb.Models.Interface;
+﻿using Mvc_Repository.Models.DbContextFactory;
+using MVCWeb.Models.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
@@ -14,13 +16,13 @@ namespace MVCWeb.Models.Repository
     {
         private DbContext _context { get; set; }
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(IDbContextFactory factory)
         {
-            if (context == null)
+            if (factory == null)
             {
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException("factory");
             }
-            this._context = context;
+            this._context = factory.GetDbContext();
         }
 
         public void Create(TEntity instance)

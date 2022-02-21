@@ -1,12 +1,15 @@
+using Mvc_Repository.Models.DbContextFactory;
 using Mvc_Repository.Service;
 using Mvc_Repository.Service.Interface;
 using MVCWeb.Models;
 using MVCWeb.Models.Interface;
 using MVCWeb.Models.Repository;
 using System;
-
+using System.Data.Entity.Infrastructure;
+using System.Web.Configuration;
 using Unity;
 using Unity.Injection;
+using Unity.Lifetime;
 
 namespace MVCWeb
 {
@@ -43,7 +46,14 @@ namespace MVCWeb
         public static void RegisterTypes(IUnityContainer container)
         {
             //註冊型別的時候讓 Unity 知道要傳什麼參數值給指定類別的建構式
-            var dbContext = new MovieDBContext();
+
+            //另外在 Unity 設定時再去調整 DbContextFactory 的 LifetimeManager，
+            //以確保 DbContextFactory instance 沒有重複，讓 DbContextFactory
+            //不會建立重複的 DbContance instance
+            string connectionString = WebConfigurationManager.ConnectionStrings["MovieDBContext"].ConnectionString;
+            container.RegisterType<IDbContextFactory, DbContextFactory>(
+                new HierarchicalLifetimeManager(),
+                new InjectionConstructor(connectionString));
 
             //Repository
             container.RegisterType<IRepository<Movie>, GenericRepository<Movie>>(new InjectionConstructor());
