@@ -56,7 +56,7 @@ namespace MVCWeb
                 new InjectionConstructor(connectionString));
 
             //Repository
-            container.RegisterType<IRepository<Movie>, GenericRepository<Movie>>(new InjectionConstructor());
+            container.RegisterType<IRepository<Movie>, GenericRepository<Movie>>();
 
             //Service
             container.RegisterType<IMoviesService, MoviesService>();
