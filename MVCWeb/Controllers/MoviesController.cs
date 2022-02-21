@@ -15,7 +15,6 @@ namespace MVCWeb.Controllers
 {
     public class MoviesController : Controller
     {
-        private MovieDBContext db = new MovieDBContext();
         private IMoviesRepository moviesRepository;
         public MoviesController()
         {
