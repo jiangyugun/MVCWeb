@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Mvc_Repository.Service;
+using Mvc_Repository.Service.Interface;
 using MVCWeb.Models;
 using MVCWeb.Models.Interface;
 using MVCWeb.Models.Repository;
@@ -15,19 +17,19 @@ namespace MVCWeb.Controllers
 {
     public class MoviesController : Controller
     {
-        private IMoviesRepository moviesRepository;
+        private IMoviesService moviesService;
         public MoviesController()
         {
-            this.moviesRepository = new MoviesRepository();
+            this.moviesService = new MoviesService();
         }
 
         public ActionResult Index(string movieGenre, string searchString, string sortOrder= "電影名稱", int? page=1)
         {
             int pageSize = 3;
             int pageNumber = (page ?? 1);
-            var movies = this.moviesRepository.GetAll(movieGenre, searchString, sortOrder);
+            var movies = this.moviesService.GetAll(movieGenre, searchString, sortOrder);
             var GenreLst = new List<string>();
-            var GenreQry = this.moviesRepository.GenreLst();
+            var GenreQry = this.moviesService.GenreLst();
             GenreLst.AddRange(GenreQry.Distinct());
             ViewBag.movieGenre = new SelectList(GenreLst);                    
 
@@ -42,7 +44,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesRepository.Get(x => x.ID == id.Value);
+                var movies = this.moviesService.GetByID(id.Value);
                 return View(movies);
             }
         }
@@ -61,7 +63,7 @@ namespace MVCWeb.Controllers
         {
             if (movie != null && ModelState.IsValid)
             {
-                this.moviesRepository.Create(movie);
+                this.moviesService.Create(movie);
                 return RedirectToAction("Index");
             }
             else
@@ -78,7 +80,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesRepository.Get(x => x.ID == id.Value);
+                var movies = this.moviesService.GetByID(id.Value);
                 return View(movies);
             }
         }
@@ -91,7 +93,7 @@ namespace MVCWeb.Controllers
         {
             if (movie != null && ModelState.IsValid)
             {
-                this.moviesRepository.Update(movie);
+                this.moviesService.Update(movie);
                 return View(movie);
             }
             else
@@ -108,7 +110,7 @@ namespace MVCWeb.Controllers
             }
             else
             {
-                var movies = this.moviesRepository.Get(x=>x.ID == id.Value);
+                var movies = this.moviesService.GetByID(id.Value);
                 return View(movies);
             }
         }
@@ -119,8 +121,7 @@ namespace MVCWeb.Controllers
         {
             try
             {
-                var movies = this.moviesRepository.Get(x => x.ID == id);
-                this.moviesRepository.Delete(movies);
+                this.moviesService.Delete(id);
             }
             catch
             {
